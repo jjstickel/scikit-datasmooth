@@ -51,20 +51,25 @@ References
 
 import numpy as np
 from scipy.linalg import solve
-from scipy.interpolate import interp1d
 from scipy import optimize
 
-import cvxopt
-from cvxopt import solvers as cvxslvrs
+# if cvxopt is not installed, skip code related to constrained smoothing
+try:
+    import cvxopt
+    from cvxopt import solvers as cvxslvrs
+    incl_const = True
+except ImportError:
+    incl_const = False
 
-
-__all__ = ['smooth_data', 'smooth_data_constr', 'fmin_options','calc_derivative', 'derivative_matrix']
+if incl_const:
+    __all__ = ['smooth_data', 'smooth_data_constr', 'fmin_options','calc_derivative', 'derivative_matrix']
+    cvxslvrs.options['show_progress'] = False
+else:
+    print('The module "cvxopt" is not installed.  Constrained smoothing will not be available.')
+    __all__ = ['smooth_data', 'fmin_options','calc_derivative', 'derivative_matrix']
 
 
 fmin_options = dict(disp=False, maxfun=50, xtol=1e-2, ftol=1e-6)
-
-cvxslvrs.options['show_progress'] = False
-
 
 def is_even(val):
     return np.mod(val, 2) == 0
@@ -74,9 +79,6 @@ def as_array1d(a):
 
 def dot_array1d(mat, a):
     return np.dot(np.asarray(mat), np.asarray(a)).ravel()
-
-def float_matrix(val): 
-    return cvxopt.matrix(val.astype(float))
 
 def derivative_matrix(x, d=1):
     """Return order `d` derivative matrix."""
@@ -184,63 +186,6 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
     return return_val
 
 
-def smooth_data_constr(x, y, d, lmbd, inequality=None, equality=None, xhat=None, 
-                     weights=None, relative=False, midpointrule=False):
-    """
-    Smooths y vs. x values by Tikhonov regularization. This version
-    assumes that constraints are provided, hence a quadratic program
-    iterative method is used to find the solution.  In addition to x
-    and y, required input paramters includes the smoothing derivative
-    d and the regularization parameter lmbd.  Determination of the
-    optimal regularization parameter is not implemented.
-    
-    Optional parameters
-    -------------------
-    inequality : tuple of numpy arrays (Ain, bin)
-        Inequality constraints, i.e. Ain*yhat <= bin.
-    equality : tuple of numpy arrays (Aeq, beq)
-        Equality constraints, i.e. Aeq*yhat = beq.
-    xhat : 1D array
-        A vector of x-values to use for the smooth curve; must be
-        monotonically increasing and must at least span the data.
-    weights : 1D array
-        A vector of weighting values for fitting each point in the data.
-    relative : bool
-        Use relative differences for the goodnes of fit term
-    midpointrule : bool
-        Use the midpoint rule for the integration terms rather than a
-        direct sum; this option conflicts with the option "xhat"
-
-    Returns
-    -------
-    yhat : 1D array
-        The smooth y-values
-    """
-    Ain, bin, Aeq, beq = (None,)*4
-    if inequality is not None:
-        Ain = float_matrix(inequality[0])
-        bin = float_matrix(inequality[1])
-    if equality is not None:
-        Aeq = float_matrix(equality[0])
-        beq = float_matrix(equality[1])
-    
-    if xhat is not None and midpointrule:
-        print ('warning: midpointrule is currently not used if xhat is '
-               'provided (since x,y may be scattered)')
-        midpointrule = False
-    if xhat is None:
-        xhat = x
-    data = Data(x, y, xhat)
-    matrices = CRegularizationMatrices(data, d, weights, relative, midpointrule)
-    A, b = matrices.build_linear_system(lmbd, data)
-
-    sol = cvxslvrs.qp(A, -b, Ain, bin, Aeq, beq)
-    if not sol['status'] == 'optimal':
-        print ('Warning: the solution did not fully converge')
-
-    return np.asarray(sol['x'])[:,0]
-
-
 def regularize_data(lmbd, data, matrices):
     A, b = matrices.build_linear_system(lmbd, data)
     yhat = solve(A, b)
@@ -320,8 +265,9 @@ class Data(object):
                                  'separate xhat is not provided')
             else:
                 raise ValueError('xhat must be monotonically increasing')
-        if self.x.min() < self.xhat.min() or self.xhat.max() < self.x.max():
-            raise ValueError('xhat must at least span the data')
+        # this check is not needed anymore with new linear mapping code, JJS 4/8/11
+        #if self.x.min() < self.xhat.min() or self.xhat.max() < self.x.max():
+        #    raise ValueError('xhat must at least span the data')
 
 
 class RegularizationMatrices(object):
@@ -355,12 +301,20 @@ class RegularizationMatrices(object):
         return np.asmatrix(D)
 
     def _mapping_matrix(self, data):
-        """Return nearest-neighbor mapping matrix, which maps `yhat` to `y`."""
-        M = np.identity(data.Nhat)
-        # nearest neighbor interpolation; works for unequally spaced xhat
-        interpolator = interp1d(data.xhat, np.arange(data.Nhat), 'nearest')
-        idx = interpolator(data.x).astype(int)
-        return np.asmatrix(M[idx,:])
+        """Linear interpolation mapping matrix, which maps `yhat` to `y`."""
+        # map the scattered points to the appriate index of the smoothed points
+        idx = np.searchsorted(data.xhat,data.x,'right') - 1
+        # allow for "extrapolation"; i.e. for xhat extremum to be interior to x
+        idx[idx==-1] += 1
+        idx[idx==data.Nhat-1] += -1
+        # create the linear interpolation matrix
+        M2 = (data.x - data.xhat[idx])/(data.xhat[idx+1] - data.xhat[idx])
+        M1 = 1 - M2
+        j = range(data.N)
+        M = np.zeros((data.N,data.Nhat))
+        M[j,idx[j]] = M1
+        M[j,idx[j]+1] = M2
+        return np.asmatrix(M)
 
     def _weight_matrices(self, data):
         if self._weights is not None:
@@ -399,22 +353,80 @@ class RegularizationMatrices(object):
         b_slice = slice(start, end)
         return B[b_slice, b_slice]
 
-class CRegularizationMatrices(RegularizationMatrices):
-    
-    def as_column_vector(self, x):
-        return cvxopt.matrix(x.copy())
-    
-    def derivative_matrix(self, data, d):
-        D = super(CRegularizationMatrices, self).derivative_matrix(data, d)
-        return cvxopt.matrix(D)
 
-    def _mapping_matrix(self, data):
-        M = super(CRegularizationMatrices, self)._mapping_matrix(data)
-        return cvxopt.matrix(M)
+if incl_const: # constrained smoothing code that depends on cvxopt
+    def smooth_data_constr(x, y, d, lmbd, inequality=None, equality=None, xhat=None, 
+                         weights=None, relative=False, midpointrule=False):
+        """
+        Smooths y vs. x values by Tikhonov regularization. This version
+        assumes that constraints are provided, hence a quadratic program
+        iterative method is used to find the solution.  In addition to x
+        and y, required input paramters includes the smoothing derivative
+        d and the regularization parameter lmbd.  Determination of the
+        optimal regularization parameter is not implemented.
 
-    def _weight_matrices(self, data):
-        U, W = super(CRegularizationMatrices, self)._weight_matrices(data)
-        return cvxopt.matrix(U), cvxopt.matrix(W)
+        Optional parameters
+        -------------------
+        inequality : tuple of numpy arrays (Ain, bin)
+            Inequality constraints, i.e. Ain*yhat <= bin.
+        equality : tuple of numpy arrays (Aeq, beq)
+            Equality constraints, i.e. Aeq*yhat = beq.
+        xhat : 1D array
+            A vector of x-values to use for the smooth curve; must be
+            monotonically increasing and must at least span the data.
+        weights : 1D array
+            A vector of weighting values for fitting each point in the data.
+        relative : bool
+            Use relative differences for the goodnes of fit term
+        midpointrule : bool
+            Use the midpoint rule for the integration terms rather than a
+            direct sum; this option conflicts with the option "xhat"
+
+        Returns
+        -------
+        yhat : 1D array
+            The smooth y-values
+        """
+        Ain, bin, Aeq, beq = (None,)*4
+        if inequality is not None:
+            Ain = float_matrix(inequality[0])
+            bin = float_matrix(inequality[1])
+        if equality is not None:
+            Aeq = float_matrix(equality[0])
+            beq = float_matrix(equality[1])
+
+        if xhat is not None and midpointrule:
+            print ('warning: midpointrule is currently not used if xhat is '
+                   'provided (since x,y may be scattered)')
+            midpointrule = False
+        if xhat is None:
+            xhat = x
+        data = Data(x, y, xhat)
+        matrices = CRegularizationMatrices(data, d, weights, relative, midpointrule)
+        A, b = matrices.build_linear_system(lmbd, data)
+
+        sol = cvxslvrs.qp(A, -b, Ain, bin, Aeq, beq)
+        if not sol['status'] == 'optimal':
+            print ('Warning: the solution did not fully converge')
+
+        return np.asarray(sol['x'])[:,0]
+
+
+    def float_matrix(val): 
+        return cvxopt.matrix(val.astype(float))
+
+    class CRegularizationMatrices(RegularizationMatrices):
+        def as_column_vector(self, x):
+            return cvxopt.matrix(x.copy())
+        def derivative_matrix(self, data, d):
+            D = super(CRegularizationMatrices, self).derivative_matrix(data, d)
+            return cvxopt.matrix(D)
+        def _mapping_matrix(self, data):
+            M = super(CRegularizationMatrices, self)._mapping_matrix(data)
+            return cvxopt.matrix(M)
+        def _weight_matrices(self, data):
+            U, W = super(CRegularizationMatrices, self)._weight_matrices(data)
+            return cvxopt.matrix(U), cvxopt.matrix(W)
 
 #if __name__ == '__main__':
 #    import nose
