@@ -57,16 +57,13 @@ from scipy import optimize
 try:
     import cvxopt
     from cvxopt import solvers as cvxslvrs
+    __all__ = ['smooth_data', 'smooth_data_constr', 'fmin_options','calc_derivative', 'derivative_matrix']
+    cvxslvrs.options['show_progress'] = False    
     incl_const = True
 except ImportError:
-    incl_const = False
-
-if incl_const:
-    __all__ = ['smooth_data', 'smooth_data_constr', 'fmin_options','calc_derivative', 'derivative_matrix']
-    cvxslvrs.options['show_progress'] = False
-else:
     print('The module "cvxopt" is not installed.  Constrained smoothing will not be available.')
-    __all__ = ['smooth_data', 'fmin_options','calc_derivative', 'derivative_matrix']
+    __all__ = ['smooth_data', 'fmin_options','calc_derivative', 'derivative_matrix']    
+    incl_const = False
 
 
 fmin_options = dict(disp=False, maxfun=50, xtol=1e-2, ftol=1e-6)
