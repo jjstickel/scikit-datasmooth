@@ -1,7 +1,7 @@
 
-Copytright for regularsmooth.py and regularsmooth_no_constr.py:
+Copyright for regularsmooth.py:
 
-Copyright (c) 2010, Jonathan Stickel
+Copyright (c) 2010, 2011 Jonathan Stickel
 
 All rights reserved.
 

@@ -154,7 +154,7 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
     Example
     --------
     >>> import numpy as np
-    >>> import data_smoothing as ds
+    >>> import scikits.datasmooth as ds
     >>> import matplotlib.pyplot as plt
     >>> npts = 100
     >>> x = np.linspace(0,2*np.pi,npts)

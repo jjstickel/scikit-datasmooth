@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-# Last Change: 7/14/10
+# Last Change: 4/12/11
 
 descr   = """This is a scikit intended to include numerical methods for smoothing
 data. """
@@ -12,10 +12,10 @@ DESCRIPTION         = 'Scikits data smoothing package'
 LONG_DESCRIPTION    = descr
 MAINTAINER          = 'Jonathan Stickel',
 MAINTAINER_EMAIL    = 'jjstickel@vcn.com',
-URL                 = 'http://scikits.appspot.com/'
+URL                 = 'https://github.com/jjstickel/scikit-datasmooth/'
 LICENSE             = 'BSD'
-DOWNLOAD_URL        = URL
-VERSION             = '0.5'
+DOWNLOAD_URL        = 'http://pypi.python.org/pypi/scikits.datasmooth/0.5'
+VERSION             = '0.6'
 
 import setuptools
 from numpy.distutils.core import setup

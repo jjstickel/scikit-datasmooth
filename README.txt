@@ -1,5 +1,5 @@
 ===============
-datasmooth v0.5
+datasmooth v0.6
 ===============
 
 This is a scikit intended to include numerical methods for smoothing
@@ -17,7 +17,7 @@ Credits
 -------
 - Jonathan J Stickel wrote the initial code to implement smoothing by
 regularization
-- Tony S Yu rewrote the code using more sophisticated Python features
+- Tony S Yu rewrote the code using object classes.
 
 
 References
