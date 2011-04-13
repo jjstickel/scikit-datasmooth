@@ -1,5 +1,5 @@
 ===============
-datasmooth v0.6
+datasmooth 0.6.1
 ===============
 
 This is a scikit intended to include numerical methods for smoothing
@@ -34,14 +34,11 @@ python setup.py install
 
 
 
-Distribution - TBD !
+Distribution
 ============
-
-Source distribution
--------------------
-
-Eggs
-----
 
 Pypi
 ====
+Source distributions are available for download at:
+
+http://pypi.python.org/pypi/scikits.datasmooth
