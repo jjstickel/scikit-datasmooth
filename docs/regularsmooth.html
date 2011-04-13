@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module regularsmooth</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>regularsmooth</strong></big></big></font></td
+><td align=right valign=bottom
+>
+  <!--<font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/Users/Shared/install/scipy/dev-sources/scikits-datasmooth_parent/git_sources/scikit-datasmooth/scikits/datasmooth/regularsmooth.py">/Users/Shared/install/scipy/dev-sources/scikits-datasmooth_parent/git_sources/scikit-datasmooth/scikits/datasmooth/regularsmooth.py</a> -->
+  </font></td></tr></table>
+    <p><tt>Smooth&nbsp;data&nbsp;by&nbsp;regularization.<br>
+&nbsp;<br>
+Implementation&nbsp;Notes<br>
+--------------------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smooth&nbsp;data&nbsp;by&nbsp;regularization&nbsp;as&nbsp;described&nbsp;in&nbsp;[1].&nbsp;Optimal&nbsp;values<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;the&nbsp;regularization&nbsp;parameter,&nbsp;lambda,&nbsp;can&nbsp;be&nbsp;calulated&nbsp;using<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;generalized&nbsp;cross-validation&nbsp;method&nbsp;described&nbsp;in&nbsp;[2]&nbsp;or&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;constraining&nbsp;the&nbsp;standard&nbsp;deviation&nbsp;between&nbsp;the&nbsp;smoothed&nbsp;and<br>
+&nbsp;&nbsp;&nbsp;&nbsp;measured&nbsp;data&nbsp;as&nbsp;described&nbsp;in&nbsp;[3].&nbsp;Both&nbsp;methods&nbsp;for&nbsp;calculating<br>
+&nbsp;&nbsp;&nbsp;&nbsp;lambda&nbsp;are&nbsp;reviewed&nbsp;in&nbsp;[1].<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Smoothing&nbsp;with&nbsp;constraints&nbsp;is&nbsp;also&nbsp;implemented,&nbsp;but&nbsp;without&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;features&nbsp;for&nbsp;determining&nbsp;an&nbsp;optimal&nbsp;value&nbsp;for&nbsp;the&nbsp;regularizaiton<br>
+&nbsp;&nbsp;&nbsp;&nbsp;parameter.&nbsp;Requires&nbsp;the&nbsp;cvxopt&nbsp;module&nbsp;(constrained&nbsp;smoothing&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;disabled&nbsp;if&nbsp;cvxopt&nbsp;is&nbsp;not&nbsp;installed).<br>
+&nbsp;<br>
+References<br>
+----------<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[1]&nbsp;Comput.&nbsp;Chem.&nbsp;Eng.&nbsp;(2010)&nbsp;34,&nbsp;467<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[2]&nbsp;Anal.&nbsp;Chem.&nbsp;(2003)&nbsp;75,&nbsp;3631<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[3]&nbsp;AIChE&nbsp;J.&nbsp;(2006)&nbsp;52,&nbsp;325</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="cvxopt.html">cvxopt</a><br>
+</td><td width="25%" valign=top><a href="cvxopt.solvers.html">cvxopt.solvers</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+</td><td width="25%" valign=top><a href="scipy.optimize.html">scipy.optimize</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-calc_derivative"><strong>calc_derivative</strong></a>(x, y, d<font color="#909090">=1</font>)</dt><dd><tt>Return&nbsp;order&nbsp;`d`&nbsp;derivative</tt></dd></dl>
+ <dl><dt><a name="-derivative_matrix"><strong>derivative_matrix</strong></a>(x, d<font color="#909090">=1</font>)</dt><dd><tt>Return&nbsp;order&nbsp;`d`&nbsp;derivative&nbsp;matrix.</tt></dd></dl>
+ <dl><dt><a name="-smooth_data"><strong>smooth_data</strong></a>(x, y, d<font color="#909090">=2</font>, lmbd<font color="#909090">=None</font>, derivative<font color="#909090">=0</font>, xhat<font color="#909090">=None</font>, stdev<font color="#909090">=None</font>, lmbd_guess<font color="#909090">=1.0</font>, weights<font color="#909090">=None</font>, relative<font color="#909090">=False</font>, midpointrule<font color="#909090">=False</font>)</dt><dd><tt>Return&nbsp;smoothed&nbsp;y-values&nbsp;and&nbsp;optimal&nbsp;regularization&nbsp;parameter.<br>
+&nbsp;<br>
+Smooths&nbsp;the&nbsp;`y`-values&nbsp;of&nbsp;1D&nbsp;data&nbsp;by&nbsp;Tikhonov&nbsp;regularization.&nbsp;Also,&nbsp;return&nbsp;<br>
+scaled&nbsp;regularization&nbsp;parameter&nbsp;`lmbd`&nbsp;used&nbsp;for&nbsp;smoothing&nbsp;when&nbsp;not&nbsp;provided.<br>
+&nbsp;<br>
+If&nbsp;neither&nbsp;the&nbsp;regularization&nbsp;parameter,&nbsp;`lmbd`,&nbsp;nor&nbsp;the&nbsp;standard&nbsp;deviation&nbsp;<br>
+`stdev`&nbsp;are&nbsp;provided,&nbsp;then&nbsp;use&nbsp;generalized&nbsp;cross-validation&nbsp;to&nbsp;determine&nbsp;the&nbsp;<br>
+optimal&nbsp;value&nbsp;for&nbsp;the&nbsp;regularization&nbsp;parameter.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+x&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Data&nbsp;x-values.<br>
+y&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Data&nbsp;y-values.<br>
+&nbsp;<br>
+Optional&nbsp;Parameters<br>
+-------------------<br>
+xhat&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;vector&nbsp;of&nbsp;x-values&nbsp;to&nbsp;use&nbsp;for&nbsp;the&nbsp;smooth&nbsp;curve;&nbsp;must&nbsp;be&nbsp;monotonically<br>
+&nbsp;&nbsp;&nbsp;&nbsp;increasing.<br>
+derivative&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Return&nbsp;derivative&nbsp;of&nbsp;given&nbsp;order.&nbsp;The&nbsp;given&nbsp;value&nbsp;is&nbsp;added&nbsp;to&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smoothing&nbsp;derivative,&nbsp;`d`,&nbsp;such&nbsp;that&nbsp;the&nbsp;returned&nbsp;derivative&nbsp;has&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;smoothness&nbsp;given&nbsp;by&nbsp;the&nbsp;input&nbsp;to&nbsp;`d`.<br>
+d&nbsp;:&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Derivative&nbsp;used&nbsp;to&nbsp;calculate&nbsp;roughness.&nbsp;When&nbsp;`d&nbsp;=&nbsp;2`,&nbsp;the&nbsp;2nd&nbsp;derivative&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(i.e.&nbsp;the&nbsp;curvature)&nbsp;of&nbsp;the&nbsp;data&nbsp;is&nbsp;used&nbsp;to&nbsp;calculate&nbsp;roughness.<br>
+stdev&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;provided,&nbsp;determine&nbsp;optimal&nbsp;value&nbsp;for&nbsp;lambda&nbsp;by&nbsp;matching&nbsp;the&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;provided&nbsp;value&nbsp;with&nbsp;the&nbsp;standard&nbsp;deviation&nbsp;of&nbsp;yhat-y;&nbsp;if&nbsp;the&nbsp;option&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'relative'&nbsp;is&nbsp;True,&nbsp;then&nbsp;a&nbsp;relative&nbsp;standard&nbsp;deviation&nbsp;is&nbsp;inferred.<br>
+lmbd&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Scaled&nbsp;regularization&nbsp;parameter;&nbsp;larger&nbsp;values&nbsp;give&nbsp;smoother&nbsp;results.<br>
+lmbd_guess&nbsp;:&nbsp;float<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;initial&nbsp;value&nbsp;for&nbsp;lambda&nbsp;used&nbsp;in&nbsp;the&nbsp;iterative&nbsp;minimization<br>
+&nbsp;&nbsp;&nbsp;&nbsp;algorithm&nbsp;to&nbsp;find&nbsp;the&nbsp;optimal&nbsp;value.<br>
+weights&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;vector&nbsp;of&nbsp;weighting&nbsp;values&nbsp;for&nbsp;fitting&nbsp;each&nbsp;point&nbsp;in&nbsp;the&nbsp;data.<br>
+relative&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Use&nbsp;relative&nbsp;differences&nbsp;for&nbsp;the&nbsp;goodness&nbsp;of&nbsp;fit&nbsp;term.<br>
+midpointrule&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Use&nbsp;the&nbsp;midpoint&nbsp;rule&nbsp;for&nbsp;the&nbsp;integration&nbsp;terms&nbsp;rather&nbsp;than&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;direct&nbsp;sum;&nbsp;this&nbsp;option&nbsp;conflicts&nbsp;with&nbsp;the&nbsp;option&nbsp;"xhat".<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+y_smooth&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;smooth&nbsp;y-values<br>
+lmbd&nbsp;:&nbsp;float,&nbsp;optional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;'Optimal'&nbsp;scaled&nbsp;regularization&nbsp;parameter.&nbsp;Returned&nbsp;unless&nbsp;it&nbsp;is&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;provided&nbsp;as&nbsp;an&nbsp;input&nbsp;parameter.<br>
+&nbsp;<br>
+Example<br>
+--------<br>
+&gt;&gt;&gt;&nbsp;import&nbsp;numpy&nbsp;as&nbsp;np<br>
+&gt;&gt;&gt;&nbsp;import&nbsp;scikits.datasmooth&nbsp;as&nbsp;ds<br>
+&gt;&gt;&gt;&nbsp;import&nbsp;matplotlib.pyplot&nbsp;as&nbsp;plt<br>
+&gt;&gt;&gt;&nbsp;npts&nbsp;=&nbsp;100<br>
+&gt;&gt;&gt;&nbsp;x&nbsp;=&nbsp;np.linspace(0,2*np.pi,npts)<br>
+&gt;&gt;&gt;&nbsp;y&nbsp;=&nbsp;np.sin(x)<br>
+&gt;&gt;&gt;&nbsp;y&nbsp;=&nbsp;y&nbsp;+&nbsp;1e-1*np.random.randn(npts)<br>
+&gt;&gt;&gt;&nbsp;yh,lmbd&nbsp;=&nbsp;ds.smooth_data&nbsp;(x,&nbsp;y,&nbsp;d=4,&nbsp;stdev=1e-1)<br>
+&gt;&gt;&gt;&nbsp;plt.plot(x,y,'o',x,yh)</tt></dd></dl>
+ <dl><dt><a name="-smooth_data_constr"><strong>smooth_data_constr</strong></a>(x, y, d, lmbd, inequality<font color="#909090">=None</font>, equality<font color="#909090">=None</font>, xhat<font color="#909090">=None</font>, weights<font color="#909090">=None</font>, relative<font color="#909090">=False</font>, midpointrule<font color="#909090">=False</font>)</dt><dd><tt>Smooths&nbsp;y&nbsp;vs.&nbsp;x&nbsp;values&nbsp;by&nbsp;Tikhonov&nbsp;regularization.&nbsp;This&nbsp;version<br>
+assumes&nbsp;that&nbsp;constraints&nbsp;are&nbsp;provided,&nbsp;hence&nbsp;a&nbsp;quadratic&nbsp;program<br>
+iterative&nbsp;method&nbsp;is&nbsp;used&nbsp;to&nbsp;find&nbsp;the&nbsp;solution.&nbsp;&nbsp;In&nbsp;addition&nbsp;to&nbsp;x<br>
+and&nbsp;y,&nbsp;required&nbsp;input&nbsp;paramters&nbsp;includes&nbsp;the&nbsp;smoothing&nbsp;derivative<br>
+d&nbsp;and&nbsp;the&nbsp;regularization&nbsp;parameter&nbsp;lmbd.&nbsp;&nbsp;Determination&nbsp;of&nbsp;the<br>
+optimal&nbsp;regularization&nbsp;parameter&nbsp;is&nbsp;not&nbsp;implemented.<br>
+&nbsp;<br>
+Optional&nbsp;parameters<br>
+-------------------<br>
+inequality&nbsp;:&nbsp;tuple&nbsp;of&nbsp;numpy&nbsp;arrays&nbsp;(Ain,&nbsp;bin)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Inequality&nbsp;constraints,&nbsp;i.e.&nbsp;Ain*yhat&nbsp;&lt;=&nbsp;bin.<br>
+equality&nbsp;:&nbsp;tuple&nbsp;of&nbsp;numpy&nbsp;arrays&nbsp;(Aeq,&nbsp;beq)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Equality&nbsp;constraints,&nbsp;i.e.&nbsp;Aeq*yhat&nbsp;=&nbsp;beq.<br>
+xhat&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;vector&nbsp;of&nbsp;x-values&nbsp;to&nbsp;use&nbsp;for&nbsp;the&nbsp;smooth&nbsp;curve;&nbsp;must&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;monotonically&nbsp;increasing.<br>
+weights&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;vector&nbsp;of&nbsp;weighting&nbsp;values&nbsp;for&nbsp;fitting&nbsp;each&nbsp;point&nbsp;in&nbsp;the&nbsp;data.<br>
+relative&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Use&nbsp;relative&nbsp;differences&nbsp;for&nbsp;the&nbsp;goodnes&nbsp;of&nbsp;fit&nbsp;term<br>
+midpointrule&nbsp;:&nbsp;bool<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Use&nbsp;the&nbsp;midpoint&nbsp;rule&nbsp;for&nbsp;the&nbsp;integration&nbsp;terms&nbsp;rather&nbsp;than&nbsp;a<br>
+&nbsp;&nbsp;&nbsp;&nbsp;direct&nbsp;sum;&nbsp;this&nbsp;option&nbsp;conflicts&nbsp;with&nbsp;the&nbsp;option&nbsp;"xhat"<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+yhat&nbsp;:&nbsp;1D&nbsp;array<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;smooth&nbsp;y-values</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__all__</strong> = ['smooth_data', 'smooth_data_constr', 'fmin_options', 'calc_derivative', 'derivative_matrix']<br>
+<strong>fmin_options</strong> = {'disp': False, 'ftol': 9.9999999999999995e-07, 'maxfun': 50, 'xtol': 0.01}</td></tr></table>
+</body></html>
