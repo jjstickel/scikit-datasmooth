@@ -10,8 +10,8 @@ import sys
 DISTNAME            = 'scikits.datasmooth'
 DESCRIPTION         = 'Scikits data smoothing package'
 LONG_DESCRIPTION    = descr
-MAINTAINER          = 'Jonathan Stickel',
-MAINTAINER_EMAIL    = 'jjstickel@vcn.com',
+MAINTAINER          = 'Jonathan Stickel'
+MAINTAINER_EMAIL    = 'jjstickel@vcn.com'
 URL                 = 'https://github.com/jjstickel/scikit-datasmooth/'
 LICENSE             = 'BSD'
 DOWNLOAD_URL        = 'http://pypi.python.org/pypi/scikits.datasmooth/'
@@ -38,16 +38,16 @@ def configuration(parent_package='', top_path=None, package_name=DISTNAME):
 
 if __name__ == "__main__":
     setup(configuration = configuration,
-        install_requires = 'numpy',
-        namespace_packages = ['scikits'],
-        packages = setuptools.find_packages(),
-        include_package_data = True,
-        #test_suite="tester", # for python setup.py test
-        zip_safe = True, # the package can run out of an .egg file
-        classifiers =
-            [ 'Development Status :: 1 - Planning',
-              'Environment :: Console',
-              'Intended Audience :: Developers',
-              'Intended Audience :: Science/Research',
-              'License :: OSI Approved :: BSD License',
-              'Topic :: Scientific/Engineering'])
+          requires = ['numpy', 'scipy.optimize'],
+          namespace_packages = ['scikits'],
+          packages = setuptools.find_packages(),
+          include_package_data = True,
+          #test_suite="tester", # for python setup.py test
+          zip_safe = True, # the package can run out of an .egg file
+          classifiers =
+          [ 'Development Status :: 4 - Beta',
+            'Environment :: Console',
+            'Intended Audience :: Developers',
+            'Intended Audience :: Science/Research',
+            'License :: OSI Approved :: BSD License',
+            'Topic :: Scientific/Engineering'])

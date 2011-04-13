@@ -3,11 +3,17 @@ Smooth data by regularization.
 
 Implementation Notes
 --------------------
-    Smooth data by regularization as described in [1]. Optimal values for the
-    regularization parameter, lambda, can be calulated using the generalized 
-    cross-validation method described in [2] or by constraining the standard 
-    deviation between the smoothed and measured data as described in [3]. Both
-    methods for calculating lambda are reviewed in [1].
+    Smooth data by regularization as described in [1]. Optimal values
+    for the regularization parameter, lambda, can be calulated using
+    the generalized cross-validation method described in [2] or by
+    constraining the standard deviation between the smoothed and
+    measured data as described in [3]. Both methods for calculating
+    lambda are reviewed in [1].
+
+    Smoothing with constraints is also implemented, but without the
+    features for determining an optimal value for the regularizaiton
+    parameter. Requires the cvxopt module (constrained smoothing is
+    disabled if cvxopt is not installed).
 
 References
 ----------
@@ -118,7 +124,7 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
     -------------------
     xhat : 1D array
         A vector of x-values to use for the smooth curve; must be monotonically
-        increasing and must at least span the data.
+        increasing.
     derivative : int
         Return derivative of given order. The given value is added to the 
         smoothing derivative, `d`, such that the returned derivative has the 
@@ -370,7 +376,7 @@ if incl_const: # constrained smoothing code that depends on cvxopt
             Equality constraints, i.e. Aeq*yhat = beq.
         xhat : 1D array
             A vector of x-values to use for the smooth curve; must be
-            monotonically increasing and must at least span the data.
+            monotonically increasing.
         weights : 1D array
             A vector of weighting values for fitting each point in the data.
         relative : bool
