@@ -15,7 +15,7 @@ MAINTAINER_EMAIL    = 'jjstickel@vcn.com'
 URL                 = 'https://github.com/jjstickel/scikit-datasmooth/'
 LICENSE             = 'BSD'
 DOWNLOAD_URL        = 'http://pypi.python.org/pypi/scikits.datasmooth/'
-VERSION             = '0.6.1'
+VERSION             = '0.61'
 
 import setuptools
 from numpy.distutils.core import setup
