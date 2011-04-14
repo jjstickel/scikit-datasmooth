@@ -242,7 +242,7 @@ def variance_std(log10lmbd, data, matrices, stdev, relative):
     y_diff = dot_array1d(matrices.M, yhat) - data.y
     if relative:
         y_diff = y_diff / data.y.astype(float)
-    stdevd = np.std(y_diff)
+    stdevd = np.std(y_diff,ddof=1)
     return (stdevd - stdev)**2
 
 
