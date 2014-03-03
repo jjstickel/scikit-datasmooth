@@ -23,6 +23,7 @@ regularization
 References
 ----------
 Comput. Chem. Eng. (2010) 34, 467
+http://dx.doi.org/10.1016/j.compchemeng.2009.10.007
 
     
 Installation from sources
