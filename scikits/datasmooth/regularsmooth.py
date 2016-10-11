@@ -351,7 +351,7 @@ class RegularizationMatrices(object):
     def _submatrix_of_integration_matrix(self, B):
         """Return integration matrix whose size matches derivative matrix."""
         d = self.d
-        start = np.floor(d/2)
+        start = int(np.floor(d/2))
         end = -start if is_even(d) else -(start + 1)
         b_slice = slice(start, end)
         return B[b_slice, b_slice]

@@ -8,7 +8,7 @@ DISTNAME            = 'scikits.datasmooth'
 DESCRIPTION         = 'Scikits data smoothing package'
 LONG_DESCRIPTION    = descr
 MAINTAINER          = 'Jonathan Stickel'
-MAINTAINER_EMAIL    = 'jjstickel@vcn.com'
+MAINTAINER_EMAIL    = 'jjstickel@gmail.com'
 URL                 = 'https://github.com/jjstickel/scikit-datasmooth/'
 LICENSE             = 'BSD'
 DOWNLOAD_URL        = 'http://pypi.python.org/pypi/scikits.datasmooth/'
@@ -47,5 +47,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
     ]
 )
