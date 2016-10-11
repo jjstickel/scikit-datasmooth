@@ -64,11 +64,11 @@ try:
     import cvxopt
     from cvxopt import solvers as cvxslvrs
     __all__ = ['smooth_data', 'smooth_data_constr', 'fmin_options','calc_derivative', 'derivative_matrix']
-    cvxslvrs.options['show_progress'] = False    
+    cvxslvrs.options['show_progress'] = False
     incl_const = True
 except ImportError:
     print('The module "cvxopt" is not installed.  Constrained smoothing will not be available.')
-    __all__ = ['smooth_data', 'fmin_options','calc_derivative', 'derivative_matrix']    
+    __all__ = ['smooth_data', 'fmin_options','calc_derivative', 'derivative_matrix']
     incl_const = False
 
 
@@ -101,18 +101,18 @@ def calc_derivative(x, y, d=1):
     return dot_array1d(D, y)
 
 
-def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None, 
-                lmbd_guess=1.0, weights=None, relative=False, 
+def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
+                lmbd_guess=1.0, weights=None, relative=False,
                 midpointrule=False):
     """Return smoothed y-values and optimal regularization parameter.
-    
-    Smooths the `y`-values of 1D data by Tikhonov regularization. Also, return 
+
+    Smooths the `y`-values of 1D data by Tikhonov regularization. Also, return
     scaled regularization parameter `lmbd` used for smoothing when not provided.
-    
-    If neither the regularization parameter, `lmbd`, nor the standard deviation 
-    `stdev` are provided, then use generalized cross-validation to determine the 
+
+    If neither the regularization parameter, `lmbd`, nor the standard deviation
+    `stdev` are provided, then use generalized cross-validation to determine the
     optimal value for the regularization parameter.
-    
+
     Parameters
     ----------
     x : 1D array
@@ -126,15 +126,15 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
         A vector of x-values to use for the smooth curve; must be monotonically
         increasing.
     derivative : int
-        Return derivative of given order. The given value is added to the 
-        smoothing derivative, `d`, such that the returned derivative has the 
+        Return derivative of given order. The given value is added to the
+        smoothing derivative, `d`, such that the returned derivative has the
         smoothness given by the input to `d`.
     d : int
-        Derivative used to calculate roughness. When `d = 2`, the 2nd derivative 
+        Derivative used to calculate roughness. When `d = 2`, the 2nd derivative
         (i.e. the curvature) of the data is used to calculate roughness.
     stdev : float
-        When provided, determine optimal value for lambda by matching the 
-        provided value with the standard deviation of yhat-y; if the option 
+        When provided, determine optimal value for lambda by matching the
+        provided value with the standard deviation of yhat-y; if the option
         'relative' is True, then a relative standard deviation is inferred.
     lmbd : float
         Scaled regularization parameter; larger values give smoother results.
@@ -154,7 +154,7 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
     y_smooth : 1D array
         The smooth y-values
     lmbd : float, optional
-        'Optimal' scaled regularization parameter. Returned unless it is 
+        'Optimal' scaled regularization parameter. Returned unless it is
         provided as an input parameter.
 
     Example
@@ -168,7 +168,7 @@ def smooth_data(x, y, d=2, lmbd=None, derivative=0, xhat=None, stdev=None,
     >>> y = y + 1e-1*np.random.randn(npts)
     >>> yh,lmbd = ds.smooth_data (x, y, d=4, stdev=1e-1)
     >>> plt.plot(x,y,'o',x,yh)
-    
+
     """
     if xhat is not None and midpointrule:
         print('warning: midpointrule is currently not used if xhat is provided '
@@ -204,7 +204,7 @@ def optimal_lambda(lmbd_guess, data, matrices, stdev, relative):
 
 def fmin(func, x0, args=None):
     """Minimize given function starting with given initial guess
-    
+
     This function wraps `scipy.optimize.fmin`; adjust keyword arguments using
     module level variable, `fmin_options`.
     """
@@ -218,7 +218,7 @@ def fmin(func, x0, args=None):
 
 def variance_gcv(log10lmbd, data, matrices):
     """Return squared variance from generalized cross-validation.
-    
+
     Solve for optimal lambda by using this function with fmin.
     """
     # TODO: implement Eiler's partial H computation for large datasets
@@ -234,7 +234,7 @@ def variance_gcv(log10lmbd, data, matrices):
 
 def variance_std(log10lmbd, data, matrices, stdev, relative):
     """Return squared difference between the standard deviation of (y - yhat)
-    
+
     Solve for optimal lambda by using this function with fmin.
     """
     lmbd = 10**np.asscalar(log10lmbd)
@@ -248,7 +248,7 @@ def variance_std(log10lmbd, data, matrices, stdev, relative):
 
 class Data(object):
     """Data structure for storing `x`, `y` data."""
-    
+
     def __init__(self, x, y, xhat=None):
         self.x = x
         self.y = y
@@ -258,7 +258,7 @@ class Data(object):
         self.N = x.size
         self.Nhat = xhat.size
         self._validate_data()
-    
+
     def _validate_data(self):
         if not self.x.size == self.y.size:
             raise ValueError('x and y must be equal length 1D arrays')
@@ -274,7 +274,7 @@ class Data(object):
 
 
 class RegularizationMatrices(object):
-    
+
     def __init__(self, data, d, weights, relative, midpointrule):
         self.d = d
         self._weights = weights
@@ -283,10 +283,10 @@ class RegularizationMatrices(object):
         self.D = self.derivative_matrix(data, d)
         self.M = self._mapping_matrix(data)
         self.U, self.W = self._weight_matrices(data)
-    
+
     def as_column_vector(self, x):
         return np.asmatrix(x).T
-    
+
     def build_linear_system(self, lmbd, data):
         M = self.M
         D = self.D
@@ -297,7 +297,7 @@ class RegularizationMatrices(object):
         A = M.T * W * M + lmbd * delta**(-1) * D.T * U * D
         b = M.T * W * y
         return A, b
-        
+
     def derivative_matrix(self, data, d):
         """Return order `d` derivative matrix."""
         D = derivative_matrix(data.xhat, d)
@@ -313,7 +313,7 @@ class RegularizationMatrices(object):
         # create the linear interpolation matrix
         M2 = (data.x - data.xhat[idx])/(data.xhat[idx+1] - data.xhat[idx])
         M1 = 1 - M2
-        j = range(data.N)
+        j = list(range(data.N))
         M = np.zeros((data.N,data.Nhat))
         M[j,idx[j]] = M1
         M[j,idx[j]+1] = M2
@@ -332,7 +332,7 @@ class RegularizationMatrices(object):
         else:
             U = np.identity(data.Nhat - self.d)
         return np.asmatrix(U), np.asmatrix(W)
-    
+
     def _apply_midpoint_rule(self, data, W):
         B = self._integration_matrix(data)
         W = np.dot(W, B)
@@ -358,7 +358,7 @@ class RegularizationMatrices(object):
 
 
 if incl_const: # constrained smoothing code that depends on cvxopt
-    def smooth_data_constr(x, y, d, lmbd, inequality=None, equality=None, xhat=None, 
+    def smooth_data_constr(x, y, d, lmbd, inequality=None, equality=None, xhat=None,
                          weights=None, relative=False, midpointrule=False):
         """
         Smooths y vs. x values by Tikhonov regularization. This version
@@ -415,7 +415,7 @@ if incl_const: # constrained smoothing code that depends on cvxopt
         return np.asarray(sol['x'])[:,0]
 
 
-    def float_matrix(val): 
+    def float_matrix(val):
         return cvxopt.matrix(val.astype(float))
 
     class CRegularizationMatrices(RegularizationMatrices):

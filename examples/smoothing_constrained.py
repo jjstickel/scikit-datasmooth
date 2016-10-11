@@ -3,6 +3,7 @@
 Smoothing by regularization of data using constraints on the smooth
 solution.
 """
+from __future__ import print_function
 
 import numpy as np
 from matplotlib.pyplot import *
@@ -42,9 +43,9 @@ Ain = np.vstack((-D,D2))
 bin = np.vstack((bl,bu2))
 
 yh = ds.smooth_data_constr(x,y,d,lmbd,(Ain,bin),(Aeq,beq))
-    
-print 'scaled regularization parameter =', lmbd
-print 'standard deviation =', np.std(y-yh,ddof=1)
+
+print('scaled regularization parameter =', lmbd)
+print('standard deviation =', np.std(y-yh,ddof=1))
 
 yp = np.dot(ds.derivative_matrix(x,1),y)
 y2p = np.dot(ds.derivative_matrix(x,2),y)

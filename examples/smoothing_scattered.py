@@ -3,6 +3,7 @@
 Smoothing by regularization of scattered data using
 generalized-cross-validation
 """
+from __future__ import print_function
 
 import numpy as np
 from matplotlib.pyplot import *
@@ -29,7 +30,7 @@ yh,lmbd = ds.smooth_data(x,y,d,xhat=xh)
 
 yht = np.sin(xh)
 
-print 'scaled regularization parameter =', lmbd
+print('scaled regularization parameter =', lmbd)
 
 cla()
 plot(x,y,'ow',xh,yh,'-b',xh,yht,'-r')
