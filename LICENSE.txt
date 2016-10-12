@@ -1,7 +1,7 @@
 
 Copyright for regularsmooth.py:
 
-Copyright (c) 2010, 2011 Jonathan Stickel
+Copyright (c) 2010, 2011, 2016 Jonathan Stickel
 
 All rights reserved.
 

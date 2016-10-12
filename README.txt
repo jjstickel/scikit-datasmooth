@@ -1,5 +1,5 @@
 ===============
-datasmooth 0.61
+datasmooth 0.7
 ===============
 
 This is a scikit intended to include numerical methods for smoothing
