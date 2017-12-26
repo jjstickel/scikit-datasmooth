@@ -1,6 +1,6 @@
-===============
-datasmooth 0.7.0
-===============
+================
+datasmooth 0.7.1
+================
 
 This is a scikit intended to include numerical methods for smoothing
 data.  Currently, only a regularization method is available here,
