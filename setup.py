@@ -4,15 +4,15 @@ descr = """This is a scikit intended to include numerical methods for smoothing
 data. """
 
 
-DISTNAME            = 'scikits.datasmooth'
-DESCRIPTION         = 'Scikits data smoothing package'
+DISTNAME            = 'scikit.datasmooth'
+DESCRIPTION         = 'Scikit data smoothing package'
 LONG_DESCRIPTION    = descr
 MAINTAINER          = 'Jonathan Stickel'
 MAINTAINER_EMAIL    = 'jjstickel@gmail.com'
 URL                 = 'https://github.com/jjstickel/scikit-datasmooth/'
 LICENSE             = 'BSD'
 DOWNLOAD_URL        = 'http://pypi.python.org/pypi/scikits.datasmooth/'
-VERSION             = '0.7.0'
+VERSION             = '0.7.1'
 
 from setuptools import setup, find_packages
 
@@ -45,8 +45,8 @@ setup(
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ]
 )
