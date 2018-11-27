@@ -29,7 +29,7 @@ http://dx.doi.org/10.1016/j.compchemeng.2009.10.007
 Installation from sources
 =========================
 
-In the directory example (the same as the file you are reading now), just do:
+In the parent directory (the same as the file you are reading now), just do:
 
 python setup.py install
 
@@ -42,4 +42,4 @@ Pypi
 ====
 Source distributions are available for download at:
 
-http://pypi.python.org/pypi/scikits.datasmooth
+http://pypi.python.org/pypi/scikit.datasmooth
